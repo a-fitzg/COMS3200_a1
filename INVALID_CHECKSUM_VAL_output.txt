@@ -1,0 +1,8 @@
+Sent packet to port:
+    (seq_num=1, ack_num=0, checksum=43094, flags=0010010) 
+    Data: 'files/file.txt'
+
+Sent packet to port:
+    (seq_num=1, ack_num=0, checksum=19008, flags=0010010) 
+    Data: 'files/file.txt'
+

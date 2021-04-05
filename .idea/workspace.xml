@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="59aa6175-beb2-464c-9817-abde29194536" name="Default Changelist" comment="Basic UDP socket communication" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="JupyterTrust" id="06d10b43-4d5f-4823-b798-59790555df29" />
+  <component name="ProjectId" id="1pwDwdSCNfddrVZfdhUWCbIJf7n" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RunManager" selected="Python.RUSHBSvr">
+    <configuration name="RUSHBSimpleTest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="ass1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/RUSHBSimpleTest.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="RUSHBSvr" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="ass1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/RUSHBSvr.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.RUSHBSvr" />
+        <item itemvalue="Python.RUSHBSimpleTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>$USER_HOME$/.subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+  </component>
+  <component name="SvnFileUrlMappingImpl">
+    <option name="myMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+    <option name="myMoreRealMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="59aa6175-beb2-464c-9817-abde29194536" name="Default Changelist" comment="" />
+      <created>1616085503769</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1616085503769</updated>
+      <workItem from="1616085506911" duration="6566000" />
+      <workItem from="1616115758778" duration="16901000" />
+      <workItem from="1616313533255" duration="8828000" />
+      <workItem from="1616396450329" duration="17335000" />
+      <workItem from="1616485631244" duration="21243000" />
+      <workItem from="1616507726068" duration="228000" />
+      <workItem from="1616507971912" duration="22436000" />
+      <workItem from="1616640864150" duration="22000" />
+    </task>
+    <task id="LOCAL-00001" summary="initial commit">
+      <created>1616085629993</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1616085629993</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="initial commit" />
+    <MESSAGE value="Basic UDP socket communication" />
+    <option name="LAST_COMMIT_MESSAGE" value="Basic UDP socket communication" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="377" y="217" width="602" height="367" key="#Notifications" timestamp="1616092265524">
+      <screen x="0" y="27" width="1366" height="741" />
+    </state>
+    <state x="377" y="217" width="602" height="367" key="#Notifications/0.27.1366.741@0.27.1366.741" timestamp="1616092265524" />
+    <state x="141" y="55" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1616524454080">
+      <screen x="0" y="27" width="1366" height="741" />
+    </state>
+    <state x="141" y="55" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.27.1366.741@0.27.1366.741" timestamp="1616524454080" />
+    <state x="0" y="123" width="1356" height="555" key="#xdebugger.XInspectDialog" timestamp="1616525693716">
+      <screen x="0" y="27" width="1366" height="741" />
+    </state>
+    <state x="0" y="123" width="1356" height="555" key="#xdebugger.XInspectDialog/0.27.1366.741@0.27.1366.741" timestamp="1616525693716" />
+    <state x="254" y="27" width="848" height="741" key="CommitChangelistDialog2" timestamp="1616092259327">
+      <screen x="0" y="27" width="1366" height="741" />
+    </state>
+    <state x="254" y="27" width="848" height="741" key="CommitChangelistDialog2/0.27.1366.741@0.27.1366.741" timestamp="1616092259327" />
+    <state x="461" y="144" width="424" height="521" key="FileChooserDialogImpl" timestamp="1616120138208">
+      <screen x="0" y="27" width="1366" height="741" />
+    </state>
+    <state x="461" y="144" width="424" height="521" key="FileChooserDialogImpl/0.27.1366.741@0.27.1366.741" timestamp="1616120138208" />
+    <state width="1874" height="237" key="GridCell.Tab.0.bottom" timestamp="1616532362775">
+      <screen x="0" y="27" width="3286" height="1053" />
+    </state>
+    <state width="1320" height="201" key="GridCell.Tab.0.bottom/0.27.1366.741@0.27.1366.741" timestamp="1616526887493" />
+    <state width="1874" height="237" key="GridCell.Tab.0.bottom/0.27.3286.1053@0.27.3286.1053" timestamp="1616532362775" />
+    <state width="1874" height="415" key="GridCell.Tab.0.bottom/1366.0.1920.1080/0.27.1366.741@0.27.1366.741" timestamp="1616376909362" />
+    <state width="1874" height="415" key="GridCell.Tab.0.bottom/1366.0.1920.1080/0.27.1366.741@1366.0.1920.1080" timestamp="1616324265816" />
+    <state width="1874" height="237" key="GridCell.Tab.0.center" timestamp="1616532362775">
+      <screen x="0" y="27" width="3286" height="1053" />
+    </state>
+    <state width="1320" height="201" key="GridCell.Tab.0.center/0.27.1366.741@0.27.1366.741" timestamp="1616526887492" />
+    <state width="1874" height="237" key="GridCell.Tab.0.center/0.27.3286.1053@0.27.3286.1053" timestamp="1616532362775" />
+    <state width="1874" height="415" key="GridCell.Tab.0.center/1366.0.1920.1080/0.27.1366.741@0.27.1366.741" timestamp="1616376909362" />
+    <state width="1874" height="415" key="GridCell.Tab.0.center/1366.0.1920.1080/0.27.1366.741@1366.0.1920.1080" timestamp="1616324265816" />
+    <state width="1874" height="237" key="GridCell.Tab.0.left" timestamp="1616532362774">
+      <screen x="0" y="27" width="3286" height="1053" />
+    </state>
+    <state width="1320" height="201" key="GridCell.Tab.0.left/0.27.1366.741@0.27.1366.741" timestamp="1616526887491" />
+    <state width="1874" height="237" key="GridCell.Tab.0.left/0.27.3286.1053@0.27.3286.1053" timestamp="1616532362774" />
+    <state width="1874" height="415" key="GridCell.Tab.0.left/1366.0.1920.1080/0.27.1366.741@0.27.1366.741" timestamp="1616376909361" />
+    <state width="1874" height="415" key="GridCell.Tab.0.left/1366.0.1920.1080/0.27.1366.741@1366.0.1920.1080" timestamp="1616324265816" />
+    <state width="1874" height="237" key="GridCell.Tab.0.right" timestamp="1616532362775">
+      <screen x="0" y="27" width="3286" height="1053" />
+    </state>
+    <state width="1320" height="201" key="GridCell.Tab.0.right/0.27.1366.741@0.27.1366.741" timestamp="1616526887493" />
+    <state width="1874" height="237" key="GridCell.Tab.0.right/0.27.3286.1053@0.27.3286.1053" timestamp="1616532362775" />
+    <state width="1874" height="415" key="GridCell.Tab.0.right/1366.0.1920.1080/0.27.1366.741@0.27.1366.741" timestamp="1616376909362" />
+    <state width="1874" height="415" key="GridCell.Tab.0.right/1366.0.1920.1080/0.27.1366.741@1366.0.1920.1080" timestamp="1616324265816" />
+    <state width="1874" height="237" key="GridCell.Tab.1.bottom" timestamp="1616532398312">
+      <screen x="0" y="27" width="3286" height="1053" />
+    </state>
+    <state width="1320" height="201" key="GridCell.Tab.1.bottom/0.27.1366.741@0.27.1366.741" timestamp="1616526879450" />
+    <state width="1874" height="237" key="GridCell.Tab.1.bottom/0.27.3286.1053@0.27.3286.1053" timestamp="1616532398312" />
+    <state width="1874" height="415" key="GridCell.Tab.1.bottom/1366.0.1920.1080/0.27.1366.741@0.27.1366.741" timestamp="1616376909363" />
+    <state width="1874" height="415" key="GridCell.Tab.1.bottom/1366.0.1920.1080/0.27.1366.741@1366.0.1920.1080" timestamp="1616324260489" />
+    <state width="1874" height="237" key="GridCell.Tab.1.center" timestamp="1616532398312">
+      <screen x="0" y="27" width="3286" height="1053" />
+    </state>
+    <state width="1320" height="201" key="GridCell.Tab.1.center/0.27.1366.741@0.27.1366.741" timestamp="1616526879450" />
+    <state width="1874" height="237" key="GridCell.Tab.1.center/0.27.3286.1053@0.27.3286.1053" timestamp="1616532398312" />
+    <state width="1874" height="415" key="GridCell.Tab.1.center/1366.0.1920.1080/0.27.1366.741@0.27.1366.741" timestamp="1616376909363" />
+    <state width="1874" height="415" key="GridCell.Tab.1.center/1366.0.1920.1080/0.27.1366.741@1366.0.1920.1080" timestamp="1616324260489" />
+    <state width="1874" height="237" key="GridCell.Tab.1.left" timestamp="1616532398312">
+      <screen x="0" y="27" width="3286" height="1053" />
+    </state>
+    <state width="1320" height="201" key="GridCell.Tab.1.left/0.27.1366.741@0.27.1366.741" timestamp="1616526879450" />
+    <state width="1874" height="237" key="GridCell.Tab.1.left/0.27.3286.1053@0.27.3286.1053" timestamp="1616532398312" />
+    <state width="1874" height="415" key="GridCell.Tab.1.left/1366.0.1920.1080/0.27.1366.741@0.27.1366.741" timestamp="1616376909362" />
+    <state width="1874" height="415" key="GridCell.Tab.1.left/1366.0.1920.1080/0.27.1366.741@1366.0.1920.1080" timestamp="1616324260489" />
+    <state width="1874" height="237" key="GridCell.Tab.1.right" timestamp="1616532398312">
+      <screen x="0" y="27" width="3286" height="1053" />
+    </state>
+    <state width="1320" height="201" key="GridCell.Tab.1.right/0.27.1366.741@0.27.1366.741" timestamp="1616526879450" />
+    <state width="1874" height="237" key="GridCell.Tab.1.right/0.27.3286.1053@0.27.3286.1053" timestamp="1616532398312" />
+    <state width="1874" height="415" key="GridCell.Tab.1.right/1366.0.1920.1080/0.27.1366.741@0.27.1366.741" timestamp="1616376909363" />
+    <state width="1874" height="415" key="GridCell.Tab.1.right/1366.0.1920.1080/0.27.1366.741@1366.0.1920.1080" timestamp="1616324260489" />
+    <state width="1643" height="526" key="XDebugger.FullValuePopup" timestamp="1616530814740">
+      <screen x="0" y="27" width="3286" height="1053" />
+    </state>
+    <state width="683" height="370" key="XDebugger.FullValuePopup/0.27.1366.741@0.27.1366.741" timestamp="1616526146542" />
+    <state width="1643" height="526" key="XDebugger.FullValuePopup/0.27.3286.1053@0.27.3286.1053" timestamp="1616530814740" />
+    <state x="346" y="89" width="672" height="678" key="search.everywhere.popup" timestamp="1616512169464">
+      <screen x="0" y="27" width="1366" height="741" />
+    </state>
+    <state x="346" y="89" width="672" height="678" key="search.everywhere.popup/0.27.1366.741@0.27.1366.741" timestamp="1616512169464" />
+    <state x="1852" y="90" width="945" height="989" key="search.everywhere.popup/1366.0.1920.1080/0.27.1366.741@1366.0.1920.1080" timestamp="1616323854216" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="first_packet.payload.decode(&quot;utf-8&quot;).rstrip('\0x00')" language="Python" />
+        <watch expression="len(payload)" language="Python" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ass1$RUSHBSvr.coverage" NAME="RUSHBSvr Coverage Results" MODIFIED="1616532276677" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ass1$RUSHBSimpleTest.coverage" NAME="RUSHBSimpleTest Coverage Results" MODIFIED="1616524363740" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>

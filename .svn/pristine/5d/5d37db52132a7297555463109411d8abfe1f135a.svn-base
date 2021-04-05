@@ -1,0 +1,333 @@
+import socket
+import sys
+import threading
+import math
+import time
+import random
+
+PACKET_SIZE_RAW = 1500
+PACKET_SIZE = 1472
+PACKET_MAX_PAYLOAD_SIZE = 1464
+RUSHB_VERSION = 2
+
+# Enum for packets from client
+CLIENT_UNSEEN = 0
+CLIENT_ACK = 1
+CLIENT_NAK = 2
+
+thread_exit_flag = False
+
+class RUSHBPacket:
+    """
+    Packet class for RUSHB packets.
+
+    The constructor for this class can only be used to initialise a RUSHB
+    packet from an incoming bytearray. If we want to create our own RUSHB
+    packet, this class must be initialised with no arguments.
+    """
+    def __init__(self, packet_in=None):
+        # RUSHB header variables
+        self.seq_number = None
+        self.ack_number = None
+        self.checksum = None
+        self.rushb_version = None
+
+        # Flags
+        self.f_ack = None
+        self.f_nak = None
+        self.f_get = None
+        self.f_dat = None
+        self.f_fin = None
+        self.f_chk = None
+        self.f_enc = None
+
+        self.payload = None
+
+        if packet_in is not None:
+            self._decode_packet(packet_in)
+            qwerty = 123
+
+    def _decode_packet(self, packet_in):
+        # PRIVATE - Parse incoming packet
+        self.seq_number = int.from_bytes(packet_in[0:2], "big")
+        self.ack_number = int.from_bytes(packet_in[2:4], "big")
+        self.checksum = int.from_bytes(packet_in[4:6], "big")
+        row4 = int.from_bytes(packet_in[6:8], "big")
+
+        # Bit masking for flags
+        self.f_ack = not not (row4 & (1 << 15))
+        self.f_nak = not not (row4 & (1 << 14))
+        self.f_get = not not (row4 & (1 << 13))
+        self.f_dat = not not (row4 & (1 << 12))
+        self.f_fin = not not (row4 & (1 << 11))
+        self.f_chk = not not (row4 & (1 << 10))
+        self.f_enc = not not (row4 & (1 << 9))
+
+        self.rushb_version = row4 & 0b111
+
+        # The rest of the packet is data payload
+        self.payload = packet_in[8:]
+
+        ## TODO - decryption and checksum verification
+
+    def get_packet_bytes(self):
+        seq_number = self.seq_number if self.seq_number is not None else 0
+        ack_number = self.ack_number if self.ack_number is not None else 0
+        checksum = self.checksum if self.checksum is not None else 0
+
+        f_ack = self.f_ack if self.f_ack is not None else 0
+        f_nak = self.f_nak if self.f_nak is not None else 0
+        f_get = self.f_get if self.f_get is not None else 0
+        f_dat = self.f_dat if self.f_dat is not None else 0
+        f_fin = self.f_fin if self.f_fin is not None else 0
+        f_chk = self.f_chk if self.f_chk is not None else 0
+        f_enc = self.f_enc if self.f_enc is not None else 0
+
+        rushb_version = self.rushb_version if self.rushb_version is not None else RUSHB_VERSION
+        payload = self.payload if self.payload is not None else bytearray(PACKET_MAX_PAYLOAD_SIZE)
+
+        special_row = (f_ack << 15) | (f_nak << 14) | (f_get << 13) | (f_dat << 12) | \
+                      (f_fin << 11) | (f_chk << 10) | (f_enc << 9) | \
+                      (rushb_version & 0b111)
+
+        packet = bytearray()
+        packet.extend(int.to_bytes(seq_number, 2, "big"))
+        packet.extend(int.to_bytes(ack_number, 2, "big"))
+        packet.extend(int.to_bytes(checksum, 2, "big"))
+        packet.extend(int.to_bytes(special_row, 2, "big"))
+        packet.extend(payload)
+
+        return packet
+
+    def get_seq_number(self):
+        return self.seq_number
+
+    def set_seq_number(self, seq_number):
+        self.seq_number = seq_number
+
+    def get_ack_number(self):
+        return self.ack_number
+
+    def set_ack_number(self, ack_number):
+        self.ack_number = ack_number
+
+    def get_checksum(self):
+        return self.checksum
+
+    def set_checksum(self, checksum):
+        self.checksum = checksum
+
+    def get_rushb_version(self):
+        return self.rushb_version
+
+    def set_rushb_version(self, rushb_version):
+        self.rushb_version = rushb_version
+
+    def get_f_ack(self):
+        return self.f_ack
+
+    def set_f_ack(self, f_ack):
+        self.f_ack = f_ack
+
+    def get_f_nak(self):
+        return self.f_nak
+
+    def set_f_nak(self, f_nak):
+        self.f_nak = f_nak
+
+    def get_f_get(self):
+        return self.f_get
+
+    def set_f_get(self, f_get):
+        self.f_get = f_get
+
+    def get_f_dat(self):
+        return self.f_dat
+
+    def set_f_dat(self, f_dat):
+        self.f_dat = f_dat
+
+    def get_f_fin(self):
+        return self.f_fin
+
+    def set_f_fin(self, f_fin):
+        self.f_fin = f_fin
+
+    def get_f_chk(self):
+        return self.f_chk
+
+    def set_f_chk(self, f_chk):
+        self.f_chk = f_chk
+
+    def get_f_enc(self):
+        return self.f_enc
+
+    def set_f_enc(self, f_enc):
+        self.f_enc = f_enc
+
+    def get_payload(self):
+        return self.payload
+
+    def set_payload(self, payload):
+        self.payload = payload
+
+
+class ServerThread(threading.Thread):
+
+    def __init__(self, first_packet_raw, server_socket, client_address):
+        threading.Thread.__init__(self)
+        self.first_packet_raw = first_packet_raw
+        self.server_socket = server_socket
+        self.client_address = client_address
+        self.server_packets = list()
+        self.client_packets = list()
+
+    def run(self):
+        # Got here because we need to start communication with this client
+        first_packet = RUSHBPacket(self.first_packet_raw)
+        received_packets = list()
+        sent_packets = list()
+
+        # Is this communication going to be encrypted / checksum'd?
+        is_encrypting = False
+        is_checking = False
+
+        # Is this communication finished?
+        is_finished = False
+
+        # List of packets we need to send
+        packets_to_send = list()
+
+        received_packets.append(first_packet)
+
+        print("----------------")
+        print("PACKET RECEIVED:")
+        print("----------------")
+        print("seq num: {0}".format(first_packet.seq_number))
+        print("ack num: {0}".format(first_packet.ack_number))
+        print("cheqsum: {0}".format(first_packet.checksum))
+        print("version: {0}".format(first_packet.rushb_version))
+        print("ACK: {0}".format(first_packet.f_ack))
+        print("NAK: {0}".format(first_packet.f_nak))
+        print("GET: {0}".format(first_packet.f_get))
+        print("DAT: {0}".format(first_packet.f_dat))
+        print("FIN: {0}".format(first_packet.f_fin))
+        print("CHK: {0}".format(first_packet.f_fin))
+        print("ENC: {0}".format(first_packet.f_enc))
+
+        print("PAYLOAD: ~~~~~")
+        print(first_packet.payload.decode("utf-8"))
+        print("~~~~~~~~~~~~~~")
+
+        # Now we need to decide how to respond to the packet
+
+        if first_packet.f_chk is True:
+            # Client has requested checksum
+            is_checking = True
+
+        if first_packet.f_enc is True:
+            # Client has requested encryption
+            is_encrypting = True
+
+        if first_packet.f_get is True:
+            # Client sent a GET request, we need to get them the file
+            # We'll send all the necessary packets over to make up the file,
+            # then we'll check for any missed transmissions afterwards
+
+            # First, find the file.
+            file_data = None
+            try:
+                requested_file = open(first_packet.payload.decode("utf-8").rstrip('\0x00'), "r")
+                file_data = requested_file.read()
+                requested_file.close()
+            except IOError:
+                # Requested file doesn't exist
+                # CLOSE CONNECTION
+                is_finished = True
+
+            # Now work out how we're going to send the message over.
+            if not is_finished:
+                # How many packets do we need to send the data across?
+                num_packets = int(math.ceil(len(file_data) / PACKET_MAX_PAYLOAD_SIZE))
+
+                our_string = "henlo fren"
+
+                for i in range(num_packets):
+                    if i == 1:
+                        # Make a dummy packet
+                        packet_to_send = RUSHBPacket()
+                        packet_to_send.set_seq_number(2)
+                        packet_to_send.set_checksum(0)
+                        packet_to_send.set_f_dat(True)
+                        payload = bytearray(our_string[0:PACKET_MAX_PAYLOAD_SIZE - 1], "ascii")
+                        if len(our_string) < PACKET_MAX_PAYLOAD_SIZE:
+                            # Pad byte array with null bytes
+                            payload.extend(bytearray(PACKET_MAX_PAYLOAD_SIZE - len(our_string)))
+                        packet_to_send.set_payload(payload)
+                        packets_to_send.append(packet_to_send)
+
+            # We send the packet over the socket
+            self.server_socket.sendto(packets_to_send[0].get_packet_bytes(), self.client_address)
+
+            x = 123
+
+            # Now we have a list of packets we need to send over
+
+        #while not is_finished:
+
+
+        x = 1
+        while True:
+            pass
+
+    def incoming_packet(self, packet_bytes):
+        pass
+
+
+def main(argv):
+    # TESTING ONLY - TODO DELET PLS!!!
+    #packet_in = b'\x00\x01\x00\x00\x00\x00 \x02files/file.txt\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+    ##################################
+
+    # Socket
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    # Bind
+    server_socket.bind(('', 0))
+    port = server_socket.getsockname()[1]
+
+    server_threads = dict()
+    active_clients = list()
+
+    # Print port to stdout
+    print(port)
+
+    # "Listen" forever
+    while 1:
+        # According to the spec, the max length of the data section (payload +
+        # data payload) is 1472 bytes. Spec says max 1500 bytes, but we will
+        # only read 1472 of those, as the operating system deals with the
+        # IP and UDP headers before it reaches the program
+        client_message, client_address = server_socket.recvfrom(PACKET_SIZE)
+
+        if client_address in active_clients:
+            # Incoming message for existing client
+            server_threads[client_address].incoming_packet(client_message)
+            pass
+        else:
+            # Incoming packet from new client, establish new connection
+            active_clients.append(client_address)
+
+            server_thread = ServerThread(client_message, server_socket, client_address)
+            server_threads[client_address] = server_thread
+            server_thread.start()
+
+        x = 123
+
+        # TODO - Receiving bytearray correctly, need to decode into packet
+
+        #server_socket.sendto(mess, client_address)
+
+
+if __name__ == "__main__":
+    main(sys.argv)
